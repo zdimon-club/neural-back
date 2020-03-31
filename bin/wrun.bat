@@ -1,0 +1,1 @@
+call venv\Scripts\activate.bat & cd back & python manage.py runserver 8001
