@@ -1,0 +1,1 @@
+ssh zdimon@neuro.webmonstr.com -t 'cd neuro/neural-back; git pull'
