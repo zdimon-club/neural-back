@@ -3,7 +3,7 @@ command -v tmux >/dev/null 2>&1 || { echo >&2 "I require tmux but it's not insta
 
 tmux new-session \; \
  split-window -h \; select-pane -t 0 \; \
- send-keys 'cd neural-back; ./bin/run' C-m \; \
+ send-keys './bin/run' C-m \; \
  select-pane -t 1 \; \
- send-keys 'cd ../neural-front; ng serve' C-m \; \
+ send-keys 'cd ../front/new; ng serve' C-m \; \
  select-pane -t 2 \; \
