@@ -5,7 +5,7 @@ from channels.layers import get_channel_layer
 from channels.db import database_sync_to_async
 from asgiref.sync import async_to_sync
 
-def send_to_all_notification():
+def send_to_all_notification(message):
     print('Sendingggg')
     channel_layer = get_channel_layer()
     for c in Channel.objects.all():
@@ -20,7 +20,7 @@ def send_to_all_notification():
             c.name,
             {
                 'type': 'send.notification',
-                
+                'message': message
             }
         )
 
@@ -44,8 +44,9 @@ class ChatConsumer(WebsocketConsumer):
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
-        print(message)
-        send_to_all_notification()
+        print(text_data_json)
+        if message['action'] == 'broadcast':
+            send_to_all_notification(message)
 
         # self.send(text_data=json.dumps({
         #     'message': message
