@@ -1,0 +1,9 @@
+echo "Deploy database"
+. ./venv/bin/activate
+cd back
+rm -r tmp
+mkdir tmp
+./manage.py migrate
+./manage.py load_settings
+./manage.py load_users
+./manage.py load_administration

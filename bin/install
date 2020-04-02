@@ -1,5 +1,5 @@
+cd back
 virtualenv -p python3 venv
 . ./venv/bin/activate
-pip install -r requirements.txt
-cd back
+pip install -r ../requirements.txt
 ./manage.py migrate
