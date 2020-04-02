@@ -1,0 +1,469 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Chat logic &#8212; dating  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Chat video streaming" href="chat_video.html" />
+    <link rel="prev" title="Socket messaging" href="socket_notifications.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="chat-logic">
+<h1>Chat logic<a class="headerlink" href="#chat-logic" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="adding-creating-chat-room">
+<h2>Adding/creating chat room<a class="headerlink" href="#adding-creating-chat-room" title="Permalink to this headline">¶</a></h2>
+<p>Angular, calling the user to chat by caller id and callee id.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">callToChat</span><span class="p">(</span><span class="nx">user_id</span><span class="o">:</span> <span class="nx">number</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">owner</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">current_user</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+    <span class="nx">abonent</span><span class="o">:</span> <span class="nx">user_id</span><span class="p">,</span>
+  <span class="p">};</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">chat_service</span><span class="p">.</span><span class="nx">addRoom</span><span class="p">(</span><span class="nx">data</span><span class="p">).</span><span class="nx">subscribe</span><span class="p">((</span><span class="nx">res</span><span class="o">:</span> <span class="nx">any</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">router</span><span class="p">.</span><span class="nx">navigate</span><span class="p">([</span><span class="s1">&#39;chat/room&#39;</span><span class="p">,</span> <span class="nx">res</span><span class="p">.</span><span class="nx">id</span><span class="p">]);</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>HTTP POST request.</p>
+<p>return this.http.post(<cite>${environment.apiUrl}/room/add</cite>,data);</p>
+<p>Input data.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nx">owner</span><span class="o">:</span><span class="kr">int</span><span class="p">,</span> <span class="nx">abonent</span><span class="o">:</span><span class="kr">int</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Django view.</p>
+<span class="target" id="module-chat.views.room.AddRoomView"></span><p>Adds room or return an existed (ChatRoom.get_room_or_create(owner,abonent)).</p>
+<p>Marks messages as readed (room.mark_as_readed(owner)).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">owner</span> <span class="o">=</span> <span class="n">UserProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;owner&#39;</span><span class="p">])</span>
+    <span class="n">abonent</span> <span class="o">=</span> <span class="n">UserProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;abonent&#39;</span><span class="p">])</span>
+    <span class="n">room</span> <span class="o">=</span> <span class="n">ChatRoom</span><span class="o">.</span><span class="n">get_room_or_create</span><span class="p">(</span><span class="n">owner</span><span class="p">,</span><span class="n">abonent</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">detail_room</span><span class="p">(</span><span class="n">room</span><span class="p">,</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">userprofile</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="chat-initialization">
+<h2>Chat initialization<a class="headerlink" href="#chat-initialization" title="Permalink to this headline">¶</a></h2>
+<p><strong>chat.components.base</strong></p>
+<p>Constructor.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>constructor(
+  private router: Router,
+  private user_store: Store&lt;UserState&gt;,
+  private session_store: Store&lt;SessionState&gt;,
+  private room_store: Store&lt;RoomState&gt;,
+  private room_service: ChatService,
+  private socket_service: SocketService,
+  private media_service: MediaService,
+  private session_service: SessionService,
+
+) {
+
+  this._unsubscribeAll = new Subject();
+
+  // Set current user from store
+  this.session_store.select(selectUser).subscribe(user =&gt; {
+    this.current_user = user;
+  });
+
+  // select rooms (contacts from the store)
+  this.rooms = this.room_store.select(getRoomList);
+
+  this.media_service._publisher$.subscribe((publisher: StreamManager) =&gt; {
+    this.publisher = publisher;
+  });
+  this.media_service._isloading$.subscribe((data: boolean) =&gt; {
+    this.is_loading = data;
+  });
+
+  this.room_store.dispatch(new roomActions.GetRoomList());
+  this.room_store.dispatch(new roomActions.RequestFavoriteUsers());
+  this.room_store.dispatch(new roomActions.RequestOnlineUsers());
+
+
+}
+</pre></div>
+</div>
+<p><strong>GetRoomList action</strong></p>
+<p>Effect.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>@Effect()
+roomList$ = this.actions$.pipe(
+  ofType(roomActions.ActionTypes.GetRoomList),
+  switchMap((action: any) =&gt; {
+    return this.service.getRoomList().pipe(
+      tap((payload: any) =&gt; this.userStore.dispatch(new UpdateUsers(payload.contact_users))),
+      map((payload: any) =&gt; new roomActions.GetRoomListLoaded(payload))
+    );
+  })
+)
+</pre></div>
+</div>
+<p><strong>RequestFavoriteUsers action</strong></p>
+<p>Effect</p>
+<p>Check if user not exists call RequestUser(userIds) whith array of ids.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>@Effect()
+loadFavoriteUsers$ = this.actions$.pipe(
+  ofType(roomActions.ActionTypes.RequestFavoriteUsers),
+  switchMap((action: any) =&gt; {
+    return this.service
+      .getFavorites().pipe(
+        withLatestFrom(this.userStore.select(selectUsersIds), (payload: any, store: any) =&gt; {
+          const userIds = [];
+          payload.forEach(key =&gt; {
+              if (store.indexOf(key) === -1 ) {
+                userIds.push(key);
+              }
+          });
+          if ( userIds.length &gt; 0) {
+            this.userStore.dispatch(new RequestUser(userIds));
+          }
+          return new roomActions.FavoriteUsersLoaded(payload);
+        })
+      );
+  })
+);
+</pre></div>
+</div>
+<p><strong>ngOnInit</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> ngOnInit() {
+
+  // this.users_online = this.room_store.select(getOnlineUserList);
+  this.users_contact = this.room_store.select(getAllUserList);
+
+
+  this.socket_service.update_contacts$
+   .pipe(takeUntil(this._unsubscribeAll))
+   .subscribe(data =&gt; {
+    this.room_store.dispatch(new roomActions.GetRoomList());
+   });
+   // console.log(this.room_store);
+}
+</pre></div>
+</div>
+<p><strong>GetRoomList action</strong></p>
+<p>Effect</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>@Effect()
+roomList$ = this.actions$.pipe(
+  ofType(roomActions.ActionTypes.GetRoomList),
+  switchMap((action: any) =&gt; {
+    return this.service.getRoomList().pipe(
+      tap((payload: any) =&gt; this.userStore.dispatch(new UpdateUsers(payload.contact_users))),
+      map((payload: any) =&gt; new roomActions.GetRoomListLoaded(payload))
+    );
+  })
+);
+</pre></div>
+</div>
+<p>Reducer</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">case</span> <span class="n">Actions</span><span class="o">.</span><span class="n">ActionTypes</span><span class="o">.</span><span class="n">GetRoomListLoaded</span><span class="p">:</span>
+
+  <span class="n">const</span> <span class="n">rooms</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="o">...</span><span class="n">state</span><span class="p">,</span>
+    <span class="n">rooms_ids</span><span class="p">:</span> <span class="n">action</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">room_ids</span><span class="p">,</span>
+    <span class="n">rooms</span><span class="p">:</span> <span class="n">action</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">rooms</span><span class="p">,</span>
+    <span class="n">current_room</span><span class="p">:</span> <span class="n">action</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">current_room</span>
+  <span class="p">};</span>
+  <span class="k">return</span> <span class="n">rooms</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>TODO(front):(3) Update contacts without GetRoomList and getting all rooms from the server.</p>
+<p>TODO(front):(3) Swith between chat rooms without SetCurrentRoom if this room exists in the store.</p>
+<p>TODO(front):(2) Add a new message in the store before sending to the server.</p>
+</div>
+<div class="section" id="subscribing-on-the-new-message-comming">
+<h2>Subscribing on the new message comming<a class="headerlink" href="#subscribing-on-the-new-message-comming" title="Permalink to this headline">¶</a></h2>
+<p><strong>chat.components.room.onInit</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>this.$_update_room = this.socket_service.update_room$.subscribe(data =&gt; {
+  this.room_store.dispatch(new roomActions.UpdateRoom(data.data.data));
+});
+</pre></div>
+</div>
+<p>TODO(front): (3) Subscribe on getting one message istead of the all messages in the room.</p>
+<p>TODO(back): (3) Send one new message to the recipient instead of all messages when a new message comming.</p>
+<p>TODO(back): Send the socket notification (message_delivered) to the sender about his message was sent to the destination.</p>
+<p>TODO(front): Mark the message as readed after the notification (message_delivered).</p>
+<p>TODO(front): (1) Block sending next message until current is not delivered.</p>
+<p>TODO(front): (1) Block sending empty message.</p>
+</div>
+<div class="section" id="sending-the-message">
+<h2>Sending the message.<a class="headerlink" href="#sending-the-message" title="Permalink to this headline">¶</a></h2>
+<p>Frontend</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="nx">send</span><span class="p">(){</span>
+  <span class="kd">let</span> <span class="nx">msg</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">author</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">current_user</span><span class="p">,</span>
+    <span class="nx">message</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">message</span><span class="p">,</span>
+    <span class="nx">created</span><span class="o">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(),</span>
+    <span class="nx">room_id</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">room</span><span class="p">.</span><span class="nx">id</span>
+  <span class="p">}</span>
+
+  <span class="c1">//</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">chat_service</span><span class="p">.</span><span class="nx">sendMessage</span><span class="p">(</span><span class="nx">msg</span><span class="p">).</span><span class="nx">subscribe</span><span class="p">(</span><span class="nx">data</span> <span class="p">=&gt;</span> <span class="p">{</span>
+
+  <span class="p">});</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+  <span class="nx">setTimeout</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">scrollToBottom</span><span class="p">,</span><span class="mi">500</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Server processing</strong>
+<strong>chat.views.message.SendMessageView</strong></p>
+<span class="target" id="module-chat.views.message.SendMessageView"></span><p>Send message to room.</p>
+<p>Check room activity to avoid loose money.</p>
+<p>Mark as readed for current room.</p>
+<p>Input data</p>
+<p>{‘author’:obj, ‘message’:str, ‘created’:str, ‘room_id’:int}</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">UserProfile</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;author&#39;</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">])</span>
+    <span class="n">room</span> <span class="o">=</span> <span class="n">ChatRoom</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;room_id&#39;</span><span class="p">])</span>
+
+    <span class="c1"># chek man empty account</span>
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">account</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">user</span><span class="o">.</span><span class="n">gender</span> <span class="o">==</span> <span class="s1">&#39;male&#39;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;empty!!!!!&#39;</span><span class="p">)</span>
+        <span class="n">send_notify_about_low_account</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="n">m</span> <span class="o">=</span> <span class="n">ChatMessage</span><span class="p">()</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">room</span> <span class="o">=</span> <span class="n">room</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="c1"># check room activity to avoid loose money</span>
+    <span class="n">room</span><span class="o">.</span><span class="n">check_is_active_by_message</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">room</span><span class="o">.</span><span class="n">check_first_message</span><span class="p">():</span>
+        <span class="n">send_update_contacts</span><span class="p">(</span><span class="n">room</span><span class="o">.</span><span class="n">get_abonent</span><span class="p">(</span><span class="n">user</span><span class="p">))</span>
+
+    <span class="c1"># mark messages as readed forcurrent rooms</span>
+    <span class="k">if</span> <span class="n">room</span><span class="o">.</span><span class="n">is_current</span><span class="p">(</span><span class="n">room</span><span class="o">.</span><span class="n">get_abonent</span><span class="p">(</span><span class="n">user</span><span class="p">)):</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">mark_as_readed</span><span class="p">()</span>
+
+    <span class="n">sent_chat_message</span><span class="p">(</span><span class="n">room</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">detail_room</span><span class="p">(</span><span class="n">room</span><span class="p">,</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">userprofile</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="updating-chat-contacts">
+<h2>Updating chat contacts<a class="headerlink" href="#updating-chat-contacts" title="Permalink to this headline">¶</a></h2>
+<p>Server.</p>
+<p><strong>chat.tasks</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">send_update_contacts</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">       Updating contact list of users after first message.</span>
+
+<span class="sd">       @Input: user object.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">sids</span> <span class="o">=</span> <span class="n">UserOnline</span><span class="o">.</span><span class="n">get_sids_by_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sids</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;task&#39;</span><span class="p">:</span> <span class="s1">&#39;put_to_socket&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s1">&#39;socket_id&#39;</span><span class="p">:</span> <span class="n">s</span><span class="p">,</span>
+                    <span class="s1">&#39;action&#39;</span><span class="p">:</span> <span class="s1">&#39;server-action:update_contacts&#39;</span>
+                <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="n">redis_client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="s1">&#39;notifications&#39;</span><span class="p">,</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Processing in the frontend side.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>update_contacts$: Observable&lt;any&gt; = this.socket.fromEvent&lt;string&gt;(
+  &#39;server-action:update_contacts&#39;,
+);
+</pre></div>
+</div>
+<p class="plantuml">
+<img src="../_images/plantuml-d66b52adef64d1ea9ed4a53ef116c20665398ada.png" alt="actor Man
+actor Woman
+collections System
+group First message from Man
+        Man -&gt; System: First message
+        System -&gt; Woman: Create a new contact at the first place
+        System -&gt; Man: Taking credits
+        Woman -&gt; System: Answer
+        System -&gt; Man: Move the contact to the first place
+end
+
+group First message from Woman
+        Woman -&gt; System: First message
+        System -&gt; Man: Create a new contact at the first place
+        Man -&gt; System: Answer
+        System -&gt; Man: Taking credits
+        System -&gt; Man: Move the contact to the first place
+end
+
+group 2 min Man idle
+        System -&gt; Man: Stop taking credits
+end
+
+group Click stop button
+     System -&gt; Man: Stop taking credits
+end
+
+group Send sticker
+     System -&gt; Man: Take credits by sticker price
+end
+
+group Send pic
+     System -&gt; Man: Take credits by pic price
+end
+
+group Camera
+     Woman -&gt; System: Turn the cam on
+     System -&gt; Man: Take credits by cam price
+     Man -&gt; System: Turn the cam on
+     System -&gt; Man: Continue taking credits by the same cam price
+end"/>
+</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">dating</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Model structure:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="model/chat.html">1. Chat model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model/account.html">2. Account model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model/media.html">3. Media model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model/agency.html">4. Agency model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model/feed.html">5. Feed model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model/moderation.html">6. Moderation model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model/online.html">7. User online model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model/shop.html">8. Shop model</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Utils:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="utils/load_data.html">Loading data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">REST API:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/login.html">Login and logout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/registration.html">Registartion.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/favs.html">Favorites</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/online.html">Users online.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/feed_coments.html">Feed comments.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/chat.html">Chat API.</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Frontend:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="frontend/other_profile.html">Other profile.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="frontend/my_profile.html">My profile.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="frontend/my_profile.html#file-structure">File structure.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="frontend/my_profile.html#component-diagramm">Component diagramm.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="frontend/chat.html">Chat.</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Architecture:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="auth.html">Authentification process</a></li>
+<li class="toctree-l1"><a class="reference internal" href="socket_notifications.html">Socket messaging</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Chat logic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#adding-creating-chat-room">Adding/creating chat room</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#chat-initialization">Chat initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#subscribing-on-the-new-message-comming">Subscribing on the new message comming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sending-the-message">Sending the message.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-chat-contacts">Updating chat contacts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="chat_video.html">Chat video streaming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html#graph">Graph</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html#authorization">Authorization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="video.html">Video striming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="video.html#id1">1.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="video.html#id2">2.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="video.html#id3">3.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="video.html#module-webrtc.views.CameraShowView">CameraShowView</a></li>
+<li class="toctree-l1"><a class="reference internal" href="video.html#module-webrtc.views.OfferView">webrtc.views.OfferView</a></li>
+<li class="toctree-l1"><a class="reference internal" href="video.html#module-webrtc.models.Connection.set_offer">webrtc.models.Connection.set_offer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="video.html#webrtc-views-answerview">webrtc.views.AnswerView</a></li>
+<li class="toctree-l1"><a class="reference internal" href="video.html#webrtc-views-iceview">webrtc.views.IceView</a></li>
+<li class="toctree-l1"><a class="reference internal" href="articles.html">Articles</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Deploy:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="deploy/nginx.html">Nginx settings</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="socket_notifications.html" title="previous chapter">Socket messaging</a></li>
+      <li>Next: <a href="chat_video.html" title="next chapter">Chat video streaming</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Dima.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/modules/chat.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "streamer",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "zdimon77@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "websocket-over-nodejs": "0.0.8"
+  }
+}
