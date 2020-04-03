@@ -3,5 +3,5 @@ from .models import UserOnline
 
 @admin.register(UserOnline)
 class UserOnlineAdmin(admin.ModelAdmin):
-    list_display = ['user', 'sid', 'token', 'agent', 'activity']
+    list_display = ['user', 'sid', 'token', 'agent', 'activity', 'gender']
 

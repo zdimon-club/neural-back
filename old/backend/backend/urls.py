@@ -17,8 +17,7 @@ from rest_framework.authtoken import views
 from feed.views import FeedViewSet, UserFeedCommentView, UserFeedCommentDetail
 
 from account.views.profile import UserProfileViewSet, UserViewSet, CheckEmail
-
-
+from account.views.registration import RegisterMan
 
 from rest_framework_swagger.views import get_swagger_view
 
@@ -31,7 +30,6 @@ router.register(r'profiles', UserProfileViewSet)
 #router.register(r'payment', PaymentViewSet)
 router.register(r'feed', FeedViewSet)
 router.register(r'product', ProductViewSet)
-#router.register(r'search', SearchTagViewSet.as_view({'get': 'list'}), basename='searchtagpersons')
 
 admin.autodiscover()
 
@@ -41,15 +39,13 @@ from account.views.auth import CustomAuthToken, LogoutView
 
 from backend.build_view import BuildView, BuildDevView
 
-
-
 urlpatterns = [
     path('build', BuildView.as_view()),
     path('builddev', BuildDevView.as_view()),
     path('swagger', schema_view),
     path('', include(router.urls)),
     # path('', admin.site.urls),
-    path('search/', include('search.urls')),
+    # path('', include('account.urls_dashboard')),
     path('userlist/', include('userlist.urls')),
     path('rosetta/', include('rosetta.urls')),
     path('i18n/', include('trans.urls')),
@@ -78,6 +74,7 @@ urlpatterns = [
     path(r'init/', InitApp.as_view()),
     path(r'logout/', LogoutView.as_view(),name='user-logout'),
     path(r'check/email', CheckEmail.as_view()),
+    path(r'register/man', RegisterMan.as_view(),name='register-man'),
     #path(r'celery/task', CeleryTaskView.as_view(),name='celery-task'),
     path('grappelli/', include('grappelli.urls')),
     # path('payment/', include('payment.urls')),

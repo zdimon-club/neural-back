@@ -1,7 +1,7 @@
 # author zdimon77@gmail.com
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from .settings import MEDIA_ROOT, MEDIA_URL, DEBUG
 from main.views import index
 
@@ -28,8 +28,11 @@ from account.views.auth import CustomAuthToken, LogoutView
 
 urlpatterns = [
     path('', index),
-    path(r'api-token-auth/', CustomAuthToken.as_view()),
 
+    # REST points
+    path('account/', include('account.urls')),
+    path('authsocial/', include('authsocial.urls')),
+    #path('authsocial/', include('social_django.urls', namespace='social')), 
     path('swagger/<str:format>', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('admin/', admin.site.urls),
@@ -41,3 +44,10 @@ if DEBUG:
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(MEDIA_URL, document_root=MEDIA_ROOT)
 
+
+
+def clear_online():
+   from online.models import UserOnline
+   UserOnline.objects.all().delete()
+
+clear_online()

@@ -33,21 +33,18 @@ class OnlineConsumer(WebsocketConsumer):
     token = None
     agent = None
 
+
     def check_online(self, token, sid, agent):
-        print(self.sid)
-        print('check online')
-        print(self.scope["user"])
+        #print(self.sid)
+        #print('check online')
+        #print(self.scope["user"])
         UserOnline.set_online(token,sid,agent)
         #o.save()
 
     def connect(self):
-        print('Connnect!!! ONLINE')
+        print('Connnect!!!')
         print(self.channel_name)
         self.accept()
-        # UserOnline.objects.create(
-        #     name=self.channel_name
-        # )
-        # self.accept()
         self.sid = self.channel_name
         self.send(text_data=json.dumps({
             'message': {

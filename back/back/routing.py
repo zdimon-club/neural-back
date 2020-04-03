@@ -1,8 +1,8 @@
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
-
 from django.urls import re_path
 
+# custom consumers
 from online.consumers import OnlineConsumer
 from chat.consumers import ChatConsumer
 

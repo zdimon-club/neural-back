@@ -15,7 +15,7 @@ SECRET_KEY = 'x9+6@m6cdr#t$)n1py&zw421*6xdi@)6(6-u993cnnfv9)4yxb'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
+APPEND_SLASH = False
 
 # Application definition
 
@@ -34,9 +34,13 @@ INSTALLED_APPS = [
     'drf_yasg',
     'django_countries',
     'corsheaders',
+    'social_django',
     'oauth2_provider',
+    'rest_framework_social_oauth2',
     'django_celery_beat',
+
     
+
 
     'chat',
     'main',
@@ -46,7 +50,8 @@ INSTALLED_APPS = [
     'feed',
     'logsys',
     'settings',
-    'online'
+    'online',
+    'authsocial',
 ]
 
 MIDDLEWARE = [

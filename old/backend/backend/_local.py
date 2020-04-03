@@ -11,11 +11,9 @@ from .settings import BASE_DIR
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'tmp/mail')
 FRONTEND_DOMAIN='http://localhost:4200'
-FRONTEND_DIR = os.path.join(os.getcwd(),'..','ng-admin')
-POSTGRES_HOST = os.getenv('POSTGRES_HOST', 'localhost')
-POSTGRES_DB = os.getenv('POSSTGRES_DB', 'dating')
-POSTGRES_PASSWORD = os.getenv('POSSTGRES_PASSWORD', '1234567')
-POSTGRES_USER = os.getenv('POSSTGRES_USER', 'postgres')
+
+
+
 """
 
 DATABASES = {
@@ -28,10 +26,10 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': POSTGRES_DB,
-        'USER': POSTGRES_USER,
-        'PASSWORD': POSTGRES_PASSWORD,
-        'HOST': POSTGRES_HOST,
+        'NAME': 'alexdating',
+        'USER': 'postgres',
+        'PASSWORD': '1234567',
+        'HOST': 'localhost',
     }
 }
 

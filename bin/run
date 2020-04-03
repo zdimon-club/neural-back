@@ -1,3 +1,5 @@
 cd back
 . ./venv/bin/activate
+pip install ../requirements.txt
+./manage.py migrate
 ./manage.py runserver 8001

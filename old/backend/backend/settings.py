@@ -89,10 +89,7 @@ INSTALLED_APPS = [
     'subscription',
     'userlist',
     'notifications',
-    'testwogs',
-    'taggit',
-    'django_log_to_telegram',
-    'search'
+    'testwogs'
 ]
 
 from easy_thumbnails.conf import Settings as thumbnail_settings
@@ -208,7 +205,6 @@ MODELTRANSLATION_DEFAULT_LANGUAGE = 'en'
 STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
-    # 'EXCEPTION_HANDLER': 'backend.rest_logger.handlers.rest_exception_handler',
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
@@ -243,12 +239,9 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 SESSION_ENGINE = 'redis_sessions.session'
 
-REDIS_HOST = os.getenv('REDIS', 'localhost')
-REDIS_PORT = int(os.getenv('REDIS_PORT', '6379'))
-
 SESSION_REDIS = {
-    'host': REDIS_HOST,
-    'port': REDIS_PORT,
+    'host': 'localhost',
+    'port': 6379,
     'db': 3,
     'prefix': 'session',
     'socket_timeout': 1
@@ -258,8 +251,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 THUMBNAIL_QUALITY = 95
 
-CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + str(REDIS_PORT)
-CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + str(REDIS_PORT)
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
@@ -286,10 +279,7 @@ LOGOUT_URL = 'admin/logout'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 
-SSL_KEYS = {"certfile": '/home/webmaster/fullchain1.pem',
-           "keyfile": '/home/webmaster/privkey1.pem'}
-
-FFPROBE_PATH = '/usr/local/bin/ffprobe'
+FFPROBE_PATH = '/usr/bin/ffprobe'
 
 # GRAPPELLI_INDEX_DASHBOARD = {
 #     'account.admin.superadmin_site': 'account.dashboard.SuperAdminDashboard',
@@ -325,64 +315,4 @@ TESTS_DEFAULT = {'default_url': 'http://localhost:8085/',
 
 FRONTEND_DIR = os.path.join(os.getcwd(),'..','..','frontend','src','app')
 ADMIN_DIR = os.path.join(os.getcwd(),'..','admin')
-
-LOG_TO_TELEGRAM_BOT_TOKEN = '1109931783:AAGsC2DnlEIlMTcGJ9y0zIhPugEaEeR1nEM'
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    # 'filters': {
-    #     'require_debug_true': {
-    #         '()': 'django.utils.log.RequireDebugTrue',
-    #     },
-    # },
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
-        },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
-        },
-    },
-    'handlers': {
-        'console': {
-            'level': 'INFO',
-            #'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple'
-        },
-        'telegram_log': {
-            'level': 'ERROR',
-            # 'filters': ['require_debug_false'],
-            'class': 'django_log_to_telegram.log.AdminTelegramHandler',
-            'formatter': 'verbose',
-            'bot_token': LOG_TO_TELEGRAM_BOT_TOKEN,
-        }
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console', 'telegram_log'],
-            'propagate': True,
-        },
-        'django.request': {
-            'handlers': ['console', 'telegram_log'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-        # 'rest_logger': {
-        #     'handlers': ['console', 'telegram_log', 'rest_logger_handler'],
-        #     'propagate': False,
-        # },
-    }
-}
-
-#LOGGING_SETTINGS = os.getenv('LOGGING', 'LOGGING')
-#DEFAULT_LOGGER = os.getenv('DEFAULT_LOGGER', 'rest_logger')
-
-#LOGGER_EXCEPTION = DEFAULT_LOGGER
-#LOGGER_ERROR = DEFAULT_LOGGER
-#LOGGER_WARNING = DEFAULT_LOGGER
-#LOGGER_INFO = DEFAULT_LOGGER
 

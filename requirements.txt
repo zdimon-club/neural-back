@@ -21,3 +21,4 @@ django-cleanup
 django-rosetta 
 django-modeltranslation==0.13.3
 grappelli-modeltranslation==0.1.3
+social-auth-app-django

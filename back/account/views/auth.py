@@ -21,7 +21,7 @@ class LogoutView(DatabaseLogMixin, APIView):
     def get(self, request):
         if request.user.is_authenticated:
             token, created = Token.objects.get_or_create(user=request.user)
-            set_user_offline({'token': token, 'user': request.user.userprofile})
+            # set_user_offline({'token': token, 'user': request.user.userprofile})
         else:
             print("User is not authenticated!")
         return Response({'status': 0, 'message': 'Ok'})

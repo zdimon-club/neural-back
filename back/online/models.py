@@ -11,6 +11,7 @@ class UserOnline(models.Model):
     sid = models.CharField(max_length=250, db_index=True)
     token = models.CharField(max_length=250, db_index=True, null=True)
     agent = models.CharField(max_length=250, db_index=True)
+    gender = models.CharField(max_length=6, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)  
     activity = models.IntegerField(default=0)
@@ -36,6 +37,7 @@ class UserOnline(models.Model):
             uo.sid = sid
             uo.token = token
             uo.agent = agent 
+            uo.gender = user.userprofile.gender
         uo.save() 
 
     def save(self, *args, **kwargs):
