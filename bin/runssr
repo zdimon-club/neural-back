@@ -1,2 +1,2 @@
-cd front/new
+cd ../front/new
 npm run build:ssr && npm run serve:ssr
