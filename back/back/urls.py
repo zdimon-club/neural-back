@@ -48,6 +48,8 @@ if DEBUG:
 
 def clear_online():
    from online.models import UserOnline
-   UserOnline.objects.all().delete()
+   try:
+      UserOnline.objects.all().delete()
+   except:
+      pass
 
-clear_online()
