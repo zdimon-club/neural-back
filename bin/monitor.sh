@@ -5,5 +5,5 @@ tmux new-session \; \
  split-window -h \; select-pane -t 0 \; \
  send-keys './bin/run' C-m \; \
  select-pane -t 1 \; \
- send-keys 'cd ../front/new; ng serve' C-m \; \
+ send-keys './bin/runssr' C-m \; \
  select-pane -t 2 \; \
