@@ -1,6 +1,6 @@
 echo "Deploy database"
-. ./venv/bin/activate
 cd back
+. ./venv/bin/activate
 rm -r tmp
 mkdir tmp
 ./manage.py migrate
