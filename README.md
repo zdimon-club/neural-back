@@ -1,7 +1,3 @@
-# Server locale
-
-    sudo apt-get install language-pack-en-base
-
 # Install virtualenv and requirements.
 
     ng add @nguniversal/express-engine --clientProject front
@@ -11,7 +7,11 @@
 
 # Neular Dating
 
-# Deploy
+# Deploy OS requirements
+
+## locale
+
+    sudo apt-get install language-pack-en-base
 
      sudo apt-get install python3 python-dev python3-dev \
      build-essential libssl-dev libffi-dev \
