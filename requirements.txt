@@ -1,5 +1,5 @@
 Django
-asgiref==3.2 
+asgiref==2.1 
 channels
 channels-redis
 django-countries
