@@ -1,5 +1,5 @@
 IS_SSL_SERVER = False
-DOMAIN='http://localhost:8001'
+DOMAIN='http://localhost:8881'
 import os
 from .settings import BASE_DIR
 

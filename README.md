@@ -5,6 +5,8 @@
 
     sudo apt-get install libpq-dev ffmpeg
 
+    sudo ln -s /usr/bin/ffprobe /usr/local/bin
+
 # Neular Dating
 
 # Deploy OS requirements

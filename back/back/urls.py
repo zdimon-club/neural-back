@@ -38,6 +38,7 @@ urlpatterns = [
     path('v1/', include([
       path('account/', include('account.urls')),
       path('authsocial/', include('authsocial.urls')),
+      path('userlist/', include('userlist.urls')),
     ])),
     
 ]
