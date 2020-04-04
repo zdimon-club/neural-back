@@ -27,15 +27,19 @@ schema_view = get_schema_view(
 from account.views.auth import CustomAuthToken, LogoutView
 
 urlpatterns = [
-    path('', index),
 
-    # REST points
-    path('account/', include('account.urls')),
-    path('authsocial/', include('authsocial.urls')),
-    #path('authsocial/', include('social_django.urls', namespace='social')), 
+    path('', index),
     path('swagger/<str:format>', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('admin/', admin.site.urls),
+
+    # REST points
+
+    path('v1/', include([
+      path('account/', include('account.urls')),
+      path('authsocial/', include('authsocial.urls')),
+    ])),
+    
 ]
 
 if DEBUG:

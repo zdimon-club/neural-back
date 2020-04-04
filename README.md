@@ -1,3 +1,7 @@
+# Server locale
+
+    sudo apt-get install language-pack-en-base
+
 # Install virtualenv and requirements.
 
     ng add @nguniversal/express-engine --clientProject front
