@@ -10,7 +10,7 @@ django-filebrowser
 django-grappelli==2.13.3
 django-image-cropping
 easy-thumbnails
-PythonVideoConverter==1.0.3
+PythonVideoConverter
 drf-yasg
 django-rest-framework-social-oauth2
 geoip2
