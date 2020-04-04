@@ -3,10 +3,10 @@ from image_cropping.fields import ImageRatioField, ImageCropField
 from django.utils.safestring import mark_safe
 from easy_thumbnails.files import get_thumbnailer
 from back.local import DOMAIN
-from converter import FFMpeg
+#from converter import FFMpeg
 from django.conf import settings
 
-ffmpeg = FFMpeg(ffprobe_path=settings.FFPROBE_PATH, ffmpeg_path='/')
+#ffmpeg = FFMpeg(ffprobe_path=settings.FFPROBE_PATH, ffmpeg_path='/')
 
 
 class VideoModelMixin(models.Model):
@@ -25,11 +25,13 @@ class VideoModelMixin(models.Model):
         abstract = True
 
     def get_video_orientation(self):
-        probe = ffmpeg.probe(self.video.path)
-        if probe.video.video_width > probe.video.video_height:
-            return 'land'
-        else:
-            return 'port'
+        return 'land'
+        # probe = ffmpeg.probe(self.video.path)
+        # if probe.video.video_width > probe.video.video_height:
+        #     return 'land'
+        # else:
+        #     return 'port'
 
     def get_video_duration(self):
-        return str(ffmpeg.probe(self.video.path).video.duration)
+        return 45
+        #return str(ffmpeg.probe(self.video.path).video.duration)
