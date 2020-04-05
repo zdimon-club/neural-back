@@ -8,6 +8,8 @@ from rest_framework.authtoken.models import Token
 from back.settings import LANGUAGES
 from account.models import UserProfile
 from account.user_serializer import ShortUserSerializer
+from account.serializers.init_serializer import InitSerializer
+from drf_yasg.utils import swagger_auto_schema
 
 class InitApp(APIView):
     '''
@@ -17,23 +19,14 @@ class InitApp(APIView):
     Runs after initialisation of the Angular app (APP_INITIALIZER) or F5.
 
     Returns data about authorized user. 
-    
-    Responce 
 
-    {
-        status: 0
-        message: "Ok"
-        token: "58d52f5c65e705866e266af6897c9458d5a95770"
-        languges: [{id: "ru", name: "Russian"}, {id: "en", name: "English"}]
-        user: {country_string: "Ukraine", is_subscribed: false, id: 206, username: "", last_name: "",…}
-        users_online: {}
-        online: 0
-    }
 
     '''
 
     permission_classes = (AllowAny,)
-
+    @swagger_auto_schema( 
+        operation_description="Returns data about authorized user", \
+        responses={200: InitSerializer} )
     def get(self, request, format=None):
         try:
             token = Token.objects.get(user=request.user)

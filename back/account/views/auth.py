@@ -10,6 +10,14 @@ from logsys.mixins.ip_tracking_log import IpTrackingLog
 from account.user_serializer import ShortUserSerializer
 from rest_framework import serializers
 
+from account.serializers.login_serializer import LogoutResponseSerializer,  \
+    LoginRequestSerializer, \
+    LoginResponseSerializer, \
+    login_pars \
+
+from drf_yasg.utils import swagger_auto_schema
+
+from rest_framework.parsers import FormParser
 
 class LogoutView(DatabaseLogMixin, APIView):
     '''
@@ -17,7 +25,10 @@ class LogoutView(DatabaseLogMixin, APIView):
     '''
     permission_classes = (AllowAny,)
     log_type = 'logout'
-
+    @swagger_auto_schema( 
+        operation_description="Logout", \
+        methos='get',
+        responses={200: LogoutResponseSerializer} )
     def get(self, request):
         if request.user.is_authenticated:
             token, created = Token.objects.get_or_create(user=request.user)
@@ -40,6 +51,12 @@ class CustomAuthToken(ObtainAuthToken):
         Checking out login and password and setting user online.
     '''
     log_type = 'login'
+
+    @swagger_auto_schema( 
+        operation_description="Login and get token", \
+        methos='post',
+        request_body=LoginRequestSerializer, 
+        responses={200: LoginResponseSerializer} )
 
     def post(self, request, *args, **kwargs):
         print(request.data)

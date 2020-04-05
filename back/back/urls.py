@@ -26,6 +26,7 @@ schema_view = get_schema_view(
 
 from account.views.auth import CustomAuthToken, LogoutView
 
+
 urlpatterns = [
 
     # path('', index),
@@ -34,6 +35,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # REST points
+
+
+
 
     path('v1/', include([
       path('account/', include('account.urls')),

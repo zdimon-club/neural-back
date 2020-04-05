@@ -4,6 +4,13 @@ from account.user_serializer import ShortUserSerializer
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
+
+class UserlistOnlineListView(generics.ListAPIView):
+    queryset = UserProfile.objects.filter(is_online=True).order_by('-id')
+    serializer_class = ShortUserSerializer
+    permission_classes = (AllowAny,)
+
+
 class UserlistAllListView(generics.ListAPIView):
     """
     API endpoint for userlist.
