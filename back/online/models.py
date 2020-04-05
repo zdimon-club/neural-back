@@ -4,6 +4,8 @@ import time
 from django.contrib.auth.models import User
 import asyncio
 from rest_framework.authtoken.models import Token
+from django.db.models.signals import post_delete, post_save
+from django.dispatch import receiver
 
 class UserOnline(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -45,3 +47,15 @@ class UserOnline(models.Model):
         super(UserOnline, self).save(*args, **kwargs)
 
             
+@receiver(models.signals.post_save, sender=UserOnline)
+def set_online(sender, instance, **kwargs):
+    user = instance.user
+    user.is_online = True
+    user.save()
+
+
+@receiver(models.signals.pre_delete, sender=UserOnline)
+def set_offline(sender, instance, **kwargs):
+    user = instance.user
+    user.is_online = False
+    user.save()

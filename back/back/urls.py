@@ -63,3 +63,5 @@ def clear_online():
    except:
       pass
 
+clear_online()
+
