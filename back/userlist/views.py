@@ -13,8 +13,11 @@ class UserlistAllListView(generics.ListAPIView):
     permission_classes = (AllowAny,)
     
     def get_queryset(self):
-        user = self.request.user.userprofile
-        if user.gender == 'male':
+        try:
+            user = self.request.user.userprofile
+            if user.gender == 'male':
+                return UserProfile.objects.filter(gender='female')
+            else:
+                return UserProfile.objects.filter(gender='male')
+        except:
             return UserProfile.objects.filter(gender='female')
-        else:
-            return UserProfile.objects.filter(gender='male')
