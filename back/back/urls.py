@@ -31,8 +31,8 @@ urlpatterns = [
 
     # path('', index),
     path('swagger/<str:format>', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('admin/', admin.site.urls),
+    path('swagger', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('', admin.site.urls),
 
     # REST points
 
@@ -43,6 +43,7 @@ urlpatterns = [
       path('account/', include('account.urls')),
       path('authsocial/', include('authsocial.urls')),
       path('userlist/', include('userlist.urls')),
+      path('usermedia/', include('usermedia.urls')),
     ])),
     
 ]

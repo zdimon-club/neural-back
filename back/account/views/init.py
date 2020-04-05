@@ -10,6 +10,7 @@ from account.models import UserProfile
 from account.user_serializer import ShortUserSerializer
 from account.serializers.init_serializer import InitSerializer
 from drf_yasg.utils import swagger_auto_schema
+from core.serializers.noauthorized import NoAuthSerializer
 
 class InitApp(APIView):
     '''
@@ -26,7 +27,7 @@ class InitApp(APIView):
     permission_classes = (AllowAny,)
     @swagger_auto_schema( 
         operation_description="Returns data about authorized user", \
-        responses={200: InitSerializer} )
+        responses={200: InitSerializer, 401: NoAuthSerializer} )
     def get(self, request, format=None):
         try:
             token = Token.objects.get(user=request.user)

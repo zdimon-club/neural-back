@@ -17,7 +17,6 @@ from account.serializers.login_serializer import LogoutResponseSerializer,  \
 
 from drf_yasg.utils import swagger_auto_schema
 
-from rest_framework.parsers import FormParser
 
 class LogoutView(DatabaseLogMixin, APIView):
     '''

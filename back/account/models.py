@@ -47,6 +47,10 @@ class UserProfile(User):
     created_at = models.DateTimeField(auto_now_add=True)
     is_blocked = models.BooleanField(default=False)
 
+    def add_account(self,ammount):
+        self.account += ammount
+        self.save()
+
     def deduct(self,ammount):
         self.account = self.account - Decimal(ammount)
         print(self.account)
