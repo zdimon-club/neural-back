@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import serializers
+from django.contrib.auth.models import User
 
 class EmailRequestSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -21,8 +22,9 @@ class CheckEmailView(APIView):
         responses={200: EmailResponseSerializer} )
     def post(self, request, format=None):
         email = request.data.get("email")
+        print(email)
         try:
             User.objects.get(email=email)
-            return Response({'status': 0, 'message': 'Ok not exist'})
-        except:
             return Response({'status': 1, 'message': 'Email esxists!'})
+        except Exception as e:
+            return Response({'status': 0, 'message': str(e)})

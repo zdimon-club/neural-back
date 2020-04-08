@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from account.models import UserProfile
+from online.models import UserOnline
 from account.user_serializer import ShortUserSerializer
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -23,8 +24,8 @@ class UserlistAllListView(generics.ListAPIView):
         try:
             user = self.request.user.userprofile
             if user.gender == 'male':
-                return UserProfile.objects.filter(gender='female')
-            else:
-                return UserProfile.objects.filter(gender='male')
+                return UserProfile.objects.filter(gender='female').exclude(user=user)
+            else: 
+                return UserProfile.objects.filter(gender='male').exclude(user=user)
         except:
             return UserProfile.objects.filter(gender='female')

@@ -6,9 +6,12 @@ import asyncio
 from rest_framework.authtoken.models import Token
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
+import json
+from account.models import UserProfile
+
 
 class UserOnline(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     username = models.CharField(max_length=250, db_index=True)
     sid = models.CharField(max_length=250, db_index=True)
     token = models.CharField(max_length=250, db_index=True, null=True)
@@ -29,10 +32,10 @@ class UserOnline(models.Model):
     def set_online(token,sid,agent):
         
         try:
-            uo = UserOnline.objects.get(token=token, sid=sid, agent=agent)
+            uo = UserOnline.objects.get(token=token, sid=sid)
         except:
             t = Token.objects.get(key=token)
-            user = t.user
+            user = t.user.userprofile
             uo = UserOnline()
             uo.username = user.username
             uo.user = user
@@ -46,9 +49,37 @@ class UserOnline(models.Model):
         self.activity = time.time()
         super(UserOnline, self).save(*args, **kwargs)
 
-            
-@receiver(models.signals.post_save, sender=UserOnline)
+from account.user_serializer import ShortUserSerializer    
+from channels.layers import get_channel_layer 
+from asgiref.sync import async_to_sync        
+channel_layer = get_channel_layer()
+
+@receiver(models.signals.pre_save, sender=UserOnline)
 def set_online(sender, instance, **kwargs):
+
+    if not instance.pk:
+        print('Creating UserOnline!')
+        profile = instance.user
+        profile.set_online()
+        if profile.gender == 'male':
+            group = 'online_male'
+        else:
+            group = 'online_female'
+        async_to_sync(channel_layer.group_send)(group, { \
+            "type": "online.on", \
+            "message": json.dumps( {
+                "type": "online:online.on", \
+                "payload": ShortUserSerializer(profile).data
+            }) \
+        })
+        # async_to_sync(channel_layer.group_send)("admin", { \
+        #     "type": "online.on", \
+        #     "message": json.dumps( {
+        #         "type": "admin:online.on", \
+        #         "payload": ShortUserSerializer(instance.user.userprofile).data
+        #     }) \
+        # })
+
     user = instance.user
     user.is_online = True
     user.save()
@@ -56,6 +87,20 @@ def set_online(sender, instance, **kwargs):
 
 @receiver(models.signals.pre_delete, sender=UserOnline)
 def set_offline(sender, instance, **kwargs):
+    print('Deleting UserOnline!')
+    profile = instance.user
+    profile.set_offline()
+    if profile.gender == 'male':
+        group = 'online_male'
+    else:
+        group = 'online_female'
+    async_to_sync(channel_layer.group_send)(group, { \
+        "type": "online.off", \
+        "message": json.dumps( {
+            "type": "online:online.off", \
+            "payload": ShortUserSerializer(instance.user.userprofile).data
+        }) \
+    })
     user = instance.user
     user.is_online = False
     user.save()

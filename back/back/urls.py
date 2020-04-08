@@ -36,14 +36,14 @@ urlpatterns = [
 
     # REST points
 
-
-
-
     path('v1/', include([
       path('account/', include('account.urls')),
       path('authsocial/', include('authsocial.urls')),
       path('userlist/', include('userlist.urls')),
       path('usermedia/', include('usermedia.urls')),
+      path('video/', include('video.urls')),
+      path('props/', include('props.urls')),
+      path('i18n/', include('trans.urls')),
     ])),
     
 ]

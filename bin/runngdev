@@ -1,2 +1,2 @@
 cd ../front/new
-ng serve --host $IP --port 4000 --disable-host-check
+ng serve --host $IP --port 4000 --disable-host-check -c remote

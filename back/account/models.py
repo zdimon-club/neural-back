@@ -46,6 +46,7 @@ class UserProfile(User):
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     is_blocked = models.BooleanField(default=False)
+    about_me = models.TextField(default='')
 
     def add_account(self,ammount):
         self.account += ammount
@@ -130,6 +131,15 @@ class UserProfile(User):
         try:
             photo = UserMedia.objects.get(user=self, is_main=True, type_media='photo')
             return photo.get_small_url_square
+
+        except Exception as Err:
+            return settings.DOMAIN + '/static/images/empty_%s.jpeg' % self.gender
+    @property
+    def main_photo_middle(self):
+        from usermedia.models import UserMedia
+        try:
+            photo = UserMedia.objects.get(user=self, is_main=True, type_media='photo')
+            return photo.get_middle_url_square
 
         except Exception as Err:
             return settings.DOMAIN + '/static/images/empty_%s.jpeg' % self.gender

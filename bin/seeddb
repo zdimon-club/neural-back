@@ -7,3 +7,4 @@ mkdir tmp
 ./manage.py load_settings
 ./manage.py load_users
 ./manage.py load_administration
+./manage.py load_props

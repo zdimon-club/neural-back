@@ -8,6 +8,7 @@ class ShortUserSerializer(serializers.Serializer):
     username = serializers.CharField(source='publicname')
     last_name = serializers.CharField()
     main_photo = serializers.CharField()
+    main_photo_middle = serializers.CharField()
     age = serializers.CharField()
     city = serializers.CharField()
     country = serializers.CharField()
@@ -19,6 +20,7 @@ class ShortUserSerializer(serializers.Serializer):
     gender = serializers.CharField()
     is_verified = serializers.BooleanField()
     get_token = serializers.CharField()
+    about_me = serializers.CharField()
 
     def get_country_string(self,obj):
         return obj.get_country_display()

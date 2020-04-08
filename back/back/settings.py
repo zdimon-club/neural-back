@@ -21,6 +21,7 @@ APPEND_SLASH = False
 
 INSTALLED_APPS = [
     'grappelli',
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,9 +41,9 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'rest_framework',
 
-    
-
-
+    'trans',
+    'props',
+    'video',
     'chat',
     'main',
     'account',
@@ -54,6 +55,8 @@ INSTALLED_APPS = [
     'online',
     'authsocial',
     'userlist',
+    'moderation',
+    'agency',
 ]
 
 MIDDLEWARE = [

@@ -64,7 +64,11 @@ class ChatConsumer(WebsocketConsumer):
             # send_to_all_notification(message)
 
         if message['action'] == 'login':
-            t = Token.objects.get(key=message['data']['token'])
-            user = t.user
-            async_to_sync(login)(self.scope, user)
-            self.scope["session"].save()
+            try:
+                t = Token.objects.get(key=message['data']['token'])
+                user = t.user
+                async_to_sync(login)(self.scope, user)
+                self.scope["session"].save()
+            except:
+                print('Error in chat consumer login message')
+                print(message)

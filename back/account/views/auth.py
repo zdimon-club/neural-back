@@ -9,26 +9,42 @@ from logsys.mixins.db_log import DatabaseLogMixin
 from logsys.mixins.ip_tracking_log import IpTrackingLog
 from account.user_serializer import ShortUserSerializer
 from rest_framework import serializers
+from online.models import UserOnline
 
 from account.serializers.login_serializer import LogoutResponseSerializer,  \
     LoginRequestSerializer, \
     LoginResponseSerializer, \
+    LogoutRequestSerializer, \
     login_pars \
 
 from drf_yasg.utils import swagger_auto_schema
 
+from channels.layers import get_channel_layer 
+from asgiref.sync import async_to_sync
+channel_layer = get_channel_layer()
 
 class LogoutView(DatabaseLogMixin, APIView):
     '''
-    Logout.
+    Logout. 
+
+    Send the sid like specific.ybySvNIa!KECgUBOYFmaD to remove from UserOnline table.
+
     '''
     permission_classes = (AllowAny,)
     log_type = 'logout'
     @swagger_auto_schema( 
-        operation_description="Logout", \
-        methos='get',
+        methos='post',
+        request_body= LogoutRequestSerializer,
         responses={200: LogoutResponseSerializer} )
-    def get(self, request):
+    def post(self, request):
+        try:
+            ol = UserOnline.objects.get(sid=request.data.get('sid'))
+            ol.delete()
+        except Exception as e:
+            print(e)
+            print('LogoutView')
+            print(request.data)
+        #async_to_sync(channel_layer.group_send)("online", {"type": "online.off"})
         if request.user.is_authenticated:
             token, created = Token.objects.get_or_create(user=request.user)
             # set_user_offline({'token': token, 'user': request.user.userprofile})

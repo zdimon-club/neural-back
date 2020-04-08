@@ -8,6 +8,10 @@ username = openapi.Parameter('username', openapi.IN_FORM, description="Username"
 password = openapi.Parameter('password', openapi.IN_FORM, description="Password", type=openapi.TYPE_STRING)
 login_pars = [username, password]
 
+
+class LogoutRequestSerializer(serializers.Serializer):
+    sid = serializers.CharField()
+
 class LogoutResponseSerializer(serializers.Serializer):
     status = serializers.IntegerField()
     message = serializers.CharField()
