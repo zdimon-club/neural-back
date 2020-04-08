@@ -35,9 +35,9 @@ class InitApp(APIView):
                 uonline = UserProfile.objects.filter(gender='female',is_online=True)
             else:
                 uonline = UserProfile.objects.filter(gender='male',is_online=True)
-            uo = {}
+            uo = []
             for u in uonline:
-                uo[u.id] = ShortUserSerializer(u).data
+                uo.append(ShortUserSerializer(u).data)
             lng = []
             for l in LANGUAGES:
                 lng.append({'id': l[0], 'name': l[1]})
